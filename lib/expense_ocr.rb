@@ -82,6 +82,6 @@ class ExpenseOcr
 
   def api_key
     client = Aws::SecretsManager::Client.new(region: 'eu-west-3')
-    client.get_secret_value(secret_id: 'MistralApiKey').secret_string
+    client.get_secret_value(secret_id: 'MISTRAL_API_KEY').secret_string
   end
 end

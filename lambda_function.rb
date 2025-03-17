@@ -2,6 +2,14 @@
 
 $LOAD_PATH.unshift('/var/task/vendor/bundle/ruby/3.3.0')
 
-def handler(event:, context:)
-  { statusCode: 200, body: 'Hello from AWS Lambda!' }
+require 'lib/expense_ocr'
+
+def handler(event:)
+  url = event['url']
+  doc_type = event['doc_type']
+  response = ExpenseOcr.new(url, doc_type).analyze_document_content
+rescue StandardError => e
+  { statusCode: 500, body: e.message }
+else
+  { statusCode: 200, body: response, doc_type: doc_type, url: url }
 end
