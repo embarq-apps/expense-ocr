@@ -2,6 +2,7 @@
 
 require 'json'
 require 'faraday'
+require 'aws-sdk-secretsmanager'
 
 # ExpenseOcr analyzes documents using Mistral AI and returns the extracted information as JSON
 class ExpenseOcr
@@ -50,7 +51,7 @@ class ExpenseOcr
     Faraday.new(url: 'https://api.mistral.ai/v1') do |faraday|
       faraday.adapter Faraday.default_adapter
       faraday.headers['Content-Type'] = 'application/json'
-      faraday.headers['Authorization'] = "Bearer #{ENV['MISTRAL_API_KEY']}"
+      faraday.headers['Authorization'] = "Bearer #{ENV['MISTRAL_API_KEY'] || api_key}"
     end
   end
 
@@ -77,5 +78,10 @@ class ExpenseOcr
 
   def model
     @is_img ? 'pixtral-12b-2409' : 'mistral-small-latest'
+  end
+
+  def api_key
+    client = Aws::SecretsManager::Client.new(region: 'eu-west-3')
+    client.get_secret_value(secret_id: 'MistralApiKey').secret_string
   end
 end
