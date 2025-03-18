@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'aws-sdk-secretsmanager'
+gem 'aws-sdk-ssm'
 gem 'dotenv'
 gem 'faraday'
 gem 'json'

@@ -2,7 +2,7 @@
 
 require 'json'
 require 'faraday'
-require 'aws-sdk-secretsmanager'
+require 'aws-sdk-ssm'
 
 # ExpenseOcr analyzes documents using Mistral AI and returns the extracted information as JSON
 class ExpenseOcr
@@ -116,8 +116,7 @@ class ExpenseOcr
   end
 
   def api_key
-    client = Aws::SecretsManager::Client.new(region: 'eu-west-3')
-    secret_string = client.get_secret_value(secret_id: 'MISTRAL_API_KEY').secret_string
-    JSON.parse(secret_string)['MISTRAL_API_KEY']
+    client = Aws::SSM::Client.new(region: 'eu-west-3')
+    client.get_parameter(name: 'MISTRAL_API_KEY', with_decryption: true).parameter.value
   end
 end
