@@ -68,7 +68,7 @@ class ExpenseOcr
         "date": "2025-03-14",
         "expense_type": "one-time",
         "category": "meal",
-        "confidence": 80.0,
+        "confidence": 4,
         "comment": "This expense was categorized as 'meal' because it corresponds to a restaurant bill for a single person, which is generally deductible if related to business."
       }
 
@@ -77,7 +77,7 @@ class ExpenseOcr
       - **Missing date:** Infer the most probable one (invoice date, payment date, transaction timestamp).
       - **Foreign currency:** Convert to Euro using the latest exchange rate.
       - **Comment Field:** Provide a detailed explanation of why the category was selected, referencing document content and deductibility rules.
-      - **Confidence Score:** Assign a confidence percentage (0-100%) indicating how certain the AI is about the categorization. If score is lower than 90%, categorize as misc.
+      - **Confidence Score:** Assign a confidence score (1 to 5)) indicating how certain the AI is about the categorization. If score is lower than 3, categorize as misc.
     PROMPT
   end
 

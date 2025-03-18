@@ -51,11 +51,12 @@ The response will be a JSON object with the following structure:
 
 ```json
 {
-  "amount": 37.97,
+  "amount": 123.45,
   "currency": "EUR",
-  "date": "2025-02-04",
-  "expense_type": "periodic",
-  "category": "telco"
+  "date": "2025-03-14",
+  "expense_type": "one-time",
+  "category": "meal",
+  "comment": "This expense was categorized as 'meal' because it corresponds to a restaurant bill for a single person, which is generally deductible if related to business."
 }
 ```
 
