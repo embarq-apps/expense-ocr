@@ -100,7 +100,7 @@ class ExpenseOcr
   end
 
   def chat_completions
-    connection.post('/v1/chat/completions') do |req|
+    @chat_completions ||= connection.post('/v1/chat/completions') do |req|
       req.body = body
     end
   end
