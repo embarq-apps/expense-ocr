@@ -85,7 +85,7 @@ class ExpenseOcr
     Faraday.new(url: 'https://api.mistral.ai') do |faraday|
       faraday.adapter Faraday.default_adapter
       faraday.headers['Content-Type'] = 'application/json'
-      faraday.headers['Authorization'] = "Bearer #{MISTRAL_API_KEY}"
+      faraday.headers['Authorization'] = "Bearer #{MISTRAL_API_KEY || api_key}"
     end
   end
 
