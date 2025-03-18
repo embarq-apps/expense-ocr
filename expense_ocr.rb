@@ -14,10 +14,10 @@ class ExpenseOcr
     @is_img = @doc_type == 'image'
   end
 
-  def analyze_document_content
-    raise "Error communicating with Mistral AI: #{response.body}" unless response.success?
+  def extract_data
+    raise "Error communicating with Mistral AI: #{chat_completions.body}" unless chat_completions.success?
 
-    JSON.parse(response.body)['choices'][0]['message']['content']
+    JSON.parse(chat_completions.body)['choices'][0]['message']['content']
   end
 
   private
@@ -89,7 +89,7 @@ class ExpenseOcr
     end
   end
 
-  def response
+  def chat_completions
     connection.post('/v1/chat/completions') do |req|
       req.body = body
     end

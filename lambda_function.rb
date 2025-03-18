@@ -7,7 +7,7 @@ require 'lib/expense_ocr'
 def handler(event:, context:)
   url = event['url']
   doc_type = event['doc_type']
-  response = ExpenseOcr.new(url, doc_type).analyze_document_content
+  response = ExpenseOcr.new(url, doc_type).extract_data
 rescue StandardError => e
   { statusCode: 500, body: e.message }
 else
