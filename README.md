@@ -100,3 +100,13 @@ Also, you need to ask an Embarq AWS admin to update the Lambda function's permis
 5. Enter the AWS Account ID of the external account.
 6. Choose lambda:InvokeFunction as the action.
 7. Click Save.
+
+## Local testing
+
+You can test manually by running the following command :
+
+```sh
+rake run
+```
+
+Don't forget to set the variables `DOCUMENT_URL` and `DOCUMENT_TYPE` in the .env file.

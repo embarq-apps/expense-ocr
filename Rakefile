@@ -5,12 +5,12 @@ require 'rubocop/rake_task'
 task default: %w[test]
 
 RuboCop::RakeTask.new(:lint) do |task|
-  task.patterns = ['lib/**/*.rb', 'test/**/*.rb']
+  task.patterns = ['*.rb', 'test/**/*.rb']
   task.fail_on_error = false
 end
 
 task :run do
-  ruby 'lib/expense_ocr.rb'
+  ruby 'main.rb'
 end
 
 task :test do
