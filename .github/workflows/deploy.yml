@@ -1,0 +1,38 @@
+name: Deploy Ruby Lambda Function
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3" # Specify your Ruby version
+
+      - name: Install Dependencies
+        run: |
+          bundle config set --local deployment 'true'
+          bundle config set --local without 'development test'
+          bundle install --jobs 4 --retry 3 --path vendor/bundle
+
+      - name: Package Lambda Function
+        run: |
+          zip -r function.zip lambda_function.rb expense_ocr.rb vendor/
+
+      - name: Deploy to AWS Lambda
+        uses: appleboy/lambda-action@v0.2.0
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: expenseOCR
+          zip_file: function.zip
