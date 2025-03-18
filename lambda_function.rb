@@ -2,7 +2,7 @@
 
 $LOAD_PATH.unshift('/var/task/vendor/bundle/ruby/3.3.0')
 
-require 'lib/expense_ocr'
+require_relative 'expense_ocr'
 
 def handler(event:, context:)
   url = event['url']
