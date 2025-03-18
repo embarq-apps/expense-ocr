@@ -2,3 +2,5 @@ vendor
 vendor/*
 
 .env
+
+.byebug_history

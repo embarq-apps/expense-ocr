@@ -25,59 +25,69 @@ class ExpenseOcr
   def prompt
     <<~PROMPT
       You are an AI specialized in document analysis and financial data extraction.
-      Your task is to analyze an input document (PDF or image) and extract key financial information while ensuring compliance with deductible expense regulations based on official guidelines.
+      Analyze an input document (PDF or image) and extract key financial details while ensuring compliance with deductible expense regulations.
 
       ### Extraction Requirements:
 
-      1. **Amount (€)**: The total monetary value in the document, including taxes (TTC).
-      2. **Date**: The date of the transaction (format: YYYY-MM-DD).
+      1. **Amount (€)**: The total monetary value, including taxes (TTC).
+      2. **Date**: The transaction date (format: YYYY-MM-DD).
       3. **Expense Type**:
-         - "periodic" if the document suggests a monthly recurring payment (e.g., subscriptions, utility bills). Yearly reccuring payment should be considered "one-time".
-         - "one-time" if the document suggests a single transaction (e.g., restaurant bill, one-time purchase).
-      4. **Category & Deductibility Rules:**
+         - `"periodic"` → Monthly recurring payment (e.g., subscriptions, utility bills). **Yearly recurring payments should be `"one-time"`**.
+         - `"one-time"` → Single transaction (e.g., restaurant bill, one-time purchase).
+      4. **Category & Deductibility Rules**:
 
-         - **"meal"**: Expenses related to food (e.g., restaurant, catering, food delivery).
-           - **Deduction rule:** Meal expenses are deductible only if incurred during a professional activity and not covered by per diem allowances.
-           - **Non-deductible cases:** If considered a personal meal without justification of a professional necessity.
-           - **Single cover (1 person)** → Categorize as `"meal"`, if deductible under business expenses.
-           - **Multiple covers (2+ people)** → Categorize as `"client_gift"`, since meals involving clients, partners, or employees are considered business-related hospitality expenses.
+         - **"meal"**: Food-related expenses (e.g., restaurant, catering, food delivery).
+           - **Deductible if incurred during a professional activity and not covered by per diem allowances**.
+           - **1 person** → Categorize as `"meal"` (if deductible).
+           - **2+ people** → Categorize as `"client_gift"` (business hospitality).
 
-         - **"telco"**: Phone, internet, and communication services.
-           - **Deduction rule:** Deductible only for professional use. If a document indicates a mixed personal-professional use, consider a pro rata deduction.
+         - **"telco"**: Phone, internet, communication services.
+           - Deductible only for professional use. **For mixed personal-professional use, apply a pro rata deduction**.
 
-         - **"transport_lodging"**: Travel-related expenses (e.g., taxi, flight, hotel, car rental, and public transport subscriptions).
-           - **Special Case:** If the document mentions a **monthly transport pass (e.g., metro, bus, train subscription)**, classify it as `"transport_lodging"` instead of `"telco"`, even though it's recurring.
-           - **Deduction rule:** Deductible if related to professional travel.
-           - **Lodging limitation:** Long-term lodging might fall under permanent establishment rules, affecting deductibility.
+         - **"transport_lodging"**: Travel-related expenses (e.g., taxi, flight, hotel, car rental, public transport subscriptions).
+           - **Monthly public transport passes (e.g., metro, bus, train subscription) belong here**.
+           - **Lodging limitation:** Long-term lodging may fall under permanent establishment rules.
 
          - **"supplies"**: Office supplies, equipment purchases, work tools.
-           - **Deduction rule:** Small office supplies are deductible immediately.
-           - **Depreciable assets:** Large purchases (e.g., computer, furniture) might require amortization over several years. If the document indicates an expensive item, flag it for potential depreciation.
+           - **Small supplies** → Deductible immediately.
+           - **Large purchases (e.g., computers, furniture)** → May require amortization.
 
-         - **"client_gift"**: Gifts, promotional items, entertainment expenses, or restaurant bills involving multiple people.
-           - **Deduction rule:** Gifts are deductible if their total annual amount remains below tax authority thresholds (e.g., €73 per beneficiary in France).
-           - **Non-deductible cases:** Excessive gifts may be requalified as non-justified business expenses.
+         - **"client_gift"**: Gifts, promotional items, entertainment, or restaurant bills for multiple people.
+           - **Deductible if the total annual amount remains below tax thresholds (e.g., €73 per beneficiary in France)**.
 
-         - **"misc"**: If no other category fits.
+         - **"misc"**: If no other category applies.
 
       ### Output Format (JSON):
-      Ensure your response follows this structure:
+      Ensure this structured response:
+      ```json
       {
+        "status": "success",
         "amount": 123.45,
         "currency": "EUR",
         "date": "2025-03-14",
         "expense_type": "one-time",
         "category": "meal",
         "confidence": 4,
-        "comment": "This expense was categorized as 'meal' because it corresponds to a restaurant bill for a single person, which is generally deductible if related to business."
+        "comment": "Categorized as 'meal' because it corresponds to a restaurant bill for a single person, generally deductible if related to business."
       }
+      ```
 
       ### Additional Processing Rules:
       - **Multiple amounts:** Choose the total or the most relevant one.
-      - **Missing date:** Infer the most probable one (invoice date, payment date, transaction timestamp).
+      - **Missing date:** Infer the most probable one (e.g., invoice date, payment date).
       - **Foreign currency:** Convert to Euro using the latest exchange rate.
-      - **Comment Field:** Provide a detailed explanation of why the category was selected, referencing document content and deductibility rules.
-      - **Confidence Score:** Assign a confidence score (1 to 5)) indicating how certain the AI is about the categorization. If score is lower than 3, categorize as misc.
+      - **Comment Field:** Provide a clear explanation for category selection, citing document content and tax rules.
+      - **Confidence Score (1-5):** If < 3, categorize as `"misc"`.
+      - **Error Handling:**
+        - If the document is **not a valid expense proof**, return:
+          ```json
+          { "status": "error", "comment": "Reason for failure" }
+          ```
+      - **Multiple proofs:**
+        - If the document contains multiple proofs, **sum the total of each proof**.
+        - **Set `"periodic"` if dates vary**
+        - Determine the **best overall category**.
+      - **Mandatory JSON Structure:** Ensure that every response is in the required JSON format.
     PROMPT
   end
 
@@ -112,7 +122,7 @@ class ExpenseOcr
   end
 
   def model
-    @is_img ? 'pixtral-12b-2409' : 'mistral-small-latest'
+    @is_img ? 'pixtral-large-latest' : 'mistral-large-latest'
   end
 
   def api_key
