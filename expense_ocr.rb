@@ -63,21 +63,15 @@ class ExpenseOcr
       {
         "status": "success",
         "amount": 123.45,
-        "currency": "EUR",
         "date": "2025-03-14",
         "frequency": "one_time",
         "category": "meal",
-        "confidence": 4,
-        "comment": "Categorized as 'meal' because it corresponds to a restaurant bill for a single person, generally deductible if related to business."
       }
       ```
 
       ### Additional Processing Rules:
       - **Multiple amounts:** Choose the total with taxes.
       - **Missing date:** Infer the most probable one (e.g., invoice date, payment date).
-      - **Foreign currency:** Convert to Euro using the latest exchange rate.
-      - **Comment Field:** Provide a clear explanation for category selection, citing document content and tax rules.
-      - **Confidence Score (1-5):** If < 3, categorize as `"misc"`.
       - **Error Handling:**
         - If the document is **not a valid expense proof**, return:
           ```json
@@ -109,8 +103,7 @@ class ExpenseOcr
     {
       model: model,
       messages: [{ role: 'user', content: content }],
-      response_format: { type: 'json_object' },
-      temperature: 0.5
+      response_format: { type: 'json_object' }
     }.to_json
   end
 
@@ -122,7 +115,7 @@ class ExpenseOcr
   end
 
   def model
-    @is_img ? 'pixtral-large-latest' : 'mistral-large-latest'
+    'pixtral-large-latest'
   end
 
   def api_key
