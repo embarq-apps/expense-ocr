@@ -33,7 +33,7 @@ class ExpenseOcr
       2. **Date**: The transaction date (format: YYYY-MM-DD).
       3. **Frequency**:
          - `"periodic"` → Monthly recurring payment (e.g., subscriptions, utility bills). **Yearly recurring payments should be `"one-time"`**.
-         - `"one-time"` → Single transaction (e.g., restaurant bill, one-time purchase).
+         - `"one_time"` → Single transaction (e.g., restaurant bill, one-time purchase).
       4. **Category & Deductibility Rules**:
 
          - **"meal"**: Food-related expenses (e.g., restaurant, catering, food delivery).
@@ -65,7 +65,7 @@ class ExpenseOcr
         "amount": 123.45,
         "currency": "EUR",
         "date": "2025-03-14",
-        "frequency": "one-time",
+        "frequency": "one_time",
         "category": "meal",
         "confidence": 4,
         "comment": "Categorized as 'meal' because it corresponds to a restaurant bill for a single person, generally deductible if related to business."
@@ -73,7 +73,7 @@ class ExpenseOcr
       ```
 
       ### Additional Processing Rules:
-      - **Multiple amounts:** Choose the total or the most relevant one.
+      - **Multiple amounts:** Choose the total with taxes.
       - **Missing date:** Infer the most probable one (e.g., invoice date, payment date).
       - **Foreign currency:** Convert to Euro using the latest exchange rate.
       - **Comment Field:** Provide a clear explanation for category selection, citing document content and tax rules.
