@@ -31,7 +31,7 @@ class ExpenseOcr
 
       1. **Amount (€)**: The total monetary value, including taxes (TTC).
       2. **Date**: The transaction date (format: YYYY-MM-DD).
-      3. **Expense Type**:
+      3. **Frequency**:
          - `"periodic"` → Monthly recurring payment (e.g., subscriptions, utility bills). **Yearly recurring payments should be `"one-time"`**.
          - `"one-time"` → Single transaction (e.g., restaurant bill, one-time purchase).
       4. **Category & Deductibility Rules**:
@@ -65,7 +65,7 @@ class ExpenseOcr
         "amount": 123.45,
         "currency": "EUR",
         "date": "2025-03-14",
-        "expense_type": "one-time",
+        "frequency": "one-time",
         "category": "meal",
         "confidence": 4,
         "comment": "Categorized as 'meal' because it corresponds to a restaurant bill for a single person, generally deductible if related to business."

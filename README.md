@@ -54,13 +54,13 @@ The response will be a JSON object with the following structure:
   "amount": 123.45,
   "currency": "EUR",
   "date": "2025-03-14",
-  "expense_type": "one-time",
+  "frequency": "one-time",
   "category": "meal",
   "comment": "This expense was categorized as 'meal' because it corresponds to a restaurant bill for a single person, which is generally deductible if related to business."
 }
 ```
 
-- `expense_type` can be `periodic` or `one-time`.
+- `frequency` can be `periodic` or `one-time`.
 - `category` is the category of the expense defined by the AI (see categorization section).
 
 ## Categorization
