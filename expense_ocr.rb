@@ -8,10 +8,10 @@ require 'aws-sdk-ssm'
 class ExpenseOcr
   MISTRAL_API_KEY = ENV['MISTRAL_API_KEY']
 
-  def initialize(url, doc_type)
+  def initialize(url, content_type)
     @url = url
-    @doc_type = doc_type
-    @is_img = @doc_type == 'image'
+    @content_type = content_type
+    @is_img = @content_type.include?('image/')
   end
 
   def extract_data

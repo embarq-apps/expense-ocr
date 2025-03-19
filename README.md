@@ -27,7 +27,7 @@ credentials = Aws::Credentials.new(aws_env[:access_key_id], aws_env[:secret_acce
 lambda_client = Aws::Lambda::Client.new(aws_env[:access_key_id], aws_env[:secret_access_key])
 
 # Define the payload
-payload = { url: "DOCUMENT_URL", doc_type: "DOCUMENT_TYPE"}.to_json
+payload = { url: "DOCUMENT_URL", content_type: "DOCUMENT_TYPE"}.to_json
 
 # Invoke the function
 response = lambda_client.invoke({
@@ -43,7 +43,7 @@ result = JSON.parse(response.payload.string)
 In the payload, you need to pass the following parameters:
 
 - `url` : URL of the document to be processed
-- `doc_type` : type of the document (`image` or `pdf`)
+- `content_type` : type of the document (`image/png`, `image/jpeg`, `application/pdf`)
 
 ## Response
 
