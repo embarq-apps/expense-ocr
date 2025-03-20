@@ -77,6 +77,7 @@ class ExpenseOcr
           ```json
           { "status": "error", "comment": "Reason for failure" }
           ```
+        - Write the "comment" **in french**.
       - **Multiple proofs:**
         - If the document contains multiple proofs, **sum the total of each proof**.
         - **Set `"periodic"` if dates vary**
