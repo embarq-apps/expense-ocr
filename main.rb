@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift('/var/task/vendor/bundle/ruby/3.3.0')
 require 'dotenv/load'
-require_relative 'expense_ocr'
+require_relative 'lambda_function'
 
-res = ExpenseOcr.new(
-  ENV['DOCUMENT_URL'],
-  ENV['DOCUMENT_TYPE']
-).extract_data
+event = { 'url' => ENV['DOCUMENT_URL'], 'content_type' => ENV['DOCUMENT_TYPE'] }
 
-p JSON.parse(res)
+p handler(event: event, context: nil)
