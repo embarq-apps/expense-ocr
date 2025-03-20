@@ -56,7 +56,7 @@ class ExpenseOcr
   end
 
   def model
-    'pixtral-large-latest'
+    'pixtral-12b-2409'
   end
 
   def api_key
