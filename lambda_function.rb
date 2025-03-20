@@ -8,8 +8,9 @@ def handler(event:, context:)
   url = event['url']
   content_type = event['content_type']
   response = ExpenseOcr.new(url, content_type).extract_data
+  { statusCode: 200, body: response }
+rescue MistralApiError => e
+  { statusCode: 500, body: e.response }
 rescue StandardError => e
   { statusCode: 500, body: e.message }
-else
-  { statusCode: 200, body: response, content_type: content_type, url: url }
 end

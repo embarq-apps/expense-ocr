@@ -4,6 +4,16 @@ require 'json'
 require 'faraday'
 require 'aws-sdk-ssm'
 
+# MistralApiError is raised when the Mistral API returns an error
+class MistralApiError < StandardError
+  attr_reader :response
+
+  def initialize(message, response = nil)
+    @response = response
+    super(message)
+  end
+end
+
 # ExpenseOcr analyzes documents using Mistral AI and returns the extracted information as JSON
 class ExpenseOcr
   MISTRAL_API_KEY = ENV['MISTRAL_API_KEY']
@@ -15,9 +25,13 @@ class ExpenseOcr
   end
 
   def extract_data
-    raise "Error communicating with Mistral AI: #{chat_completions.body}" unless chat_completions.success?
+    response_body = parse_json(chat_completions.body)
+    unless chat_completions.success?
+      error_message = "Mistral API error#{response_body['error'] ? ": #{response_body['error']}" : ''}"
+      raise MistralApiError.new(error_message, response_body)
+    end
 
-    JSON.parse(chat_completions.body)['choices'][0]['message']['content']
+    response_body.dig('choices', 0, 'message', 'content')
   end
 
   private
@@ -62,5 +76,11 @@ class ExpenseOcr
   def api_key
     client = Aws::SSM::Client.new(region: 'eu-west-3')
     client.get_parameter(name: 'MISTRAL_API_KEY', with_decryption: true).parameter.value
+  end
+
+  def parse_json(body)
+    JSON.parse(body)
+  rescue JSON::ParserError
+    { error: 'Invalid JSON response', raw_body: body }
   end
 end
