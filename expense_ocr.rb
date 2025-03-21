@@ -37,7 +37,9 @@ class ExpenseOcr
   private
 
   def prompt
-    @prompt ||= File.read(File.join(__dir__, 'prompt.txt'))
+    @prompt ||= File.read(File.join(__dir__, 'prompt.txt'),
+                          encoding: 'UTF-8', invalid: :replace,
+                          undef: :replace, replace: '?')
   end
 
   def connection
