@@ -26,7 +26,7 @@ jobs:
 
       - name: Package Lambda Function
         run: |
-          zip -r function.zip lambda_function.rb expense_ocr.rb prompt.txt vendor/
+          zip -r function.zip lambda_function.rb mistral/ vendor/
 
       - name: Deploy to AWS Lambda
         uses: appleboy/lambda-action@v0.2.0
