@@ -2,14 +2,16 @@
 
 $LOAD_PATH.unshift('/var/task/vendor/bundle/ruby/3.3.0')
 
-require_relative 'expense_ocr'
+require_relative 'mistral/chat'
+require_relative 'mistral/base'
 
 def handler(event:, context:)
   url = event['url']
   content_type = event['content_type']
-  response = ExpenseOcr.new(url, content_type).extract_data
+  response = Mistral::Chat.new(url, content_type).call
+
   { statusCode: 200, body: response }
-rescue MistralApiError => e
+rescue Mistral::ApiError => e
   { statusCode: 500, body: e.response }
 rescue StandardError => e
   { statusCode: 500, body: e.message }
